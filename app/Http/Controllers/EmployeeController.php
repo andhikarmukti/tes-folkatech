@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Employee;
 use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
+use App\Models\Company;
+use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
 {
@@ -15,7 +17,15 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        //
+        $title = 'Employee Page';
+        $employees = Employee::all();
+        $companies = Company::all();
+
+        return view('employee.index', compact(
+            'title',
+            'employees',
+            'companies'
+        ));
     }
 
     /**
@@ -34,9 +44,21 @@ class EmployeeController extends Controller
      * @param  \App\Http\Requests\StoreEmployeeRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreEmployeeRequest $request)
+    public function store(Request $request)
     {
-        //
+        // dd($request->all());
+        $rules = [
+            'firstname' => 'required',
+            'lastname' => 'required',
+            'company_id' => 'required',
+            'email' => 'required|email',
+            'phone' => 'required',
+        ];
+        $request->validate($rules);
+
+        Employee::create($request->all());
+
+        return back()->with('success', 'Berhasil menambah data employee!');
     }
 
     /**
@@ -58,7 +80,14 @@ class EmployeeController extends Controller
      */
     public function edit(Employee $employee)
     {
-        //
+        $title = 'Employee Page \ Edit';
+        $companies = Company::all();
+
+        return view('employee.edit', compact(
+            'employee',
+            'companies',
+            'title'
+        ));
     }
 
     /**
@@ -68,9 +97,27 @@ class EmployeeController extends Controller
      * @param  \App\Models\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateEmployeeRequest $request, Employee $employee)
+    public function update(Request $request, Employee $employee)
     {
-        //
+        // dd($request->all());
+        $rules = [
+            'firstname' => 'required',
+            'lastname' => 'required',
+            'company_id' => 'required',
+            'email' => 'required|email',
+            'phone' => 'required',
+        ];
+        $request->validate($rules);
+
+        $employee->update([
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'company_id' => $request->company_id,
+            'email' => $request->email,
+            'phone' => $request->phone,
+        ]);
+
+        return redirect('/employee')->with('updated', 'Berhasil mengubah data employee!');
     }
 
     /**
@@ -81,6 +128,13 @@ class EmployeeController extends Controller
      */
     public function destroy(Employee $employee)
     {
-        //
+        try{
+            $employee->delete();
+            // return response()->json([
+            //     'success' => true
+            // ], 200);
+        }catch(\Exception $e){
+            return response()->json($e->getMessage());
+        }
     }
 }

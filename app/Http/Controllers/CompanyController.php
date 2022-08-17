@@ -119,7 +119,7 @@ class CompanyController extends Controller
             $request->logo->storeAs('images', $imageName);
         }
 
-        $company->update([
+        $company = $company->update([
             'name' => $request->name,
             'email' => $request->email,
             'logo' => $imageName,
@@ -127,6 +127,10 @@ class CompanyController extends Controller
         ]);
 
         return redirect('/company')->with('updated', 'Berhasil mengubah data company!');
+        // return response()->json([
+        //     'success' => true,
+        //     'company' =>$company
+        // ], 200);
     }
 
     /**
@@ -138,13 +142,13 @@ class CompanyController extends Controller
     public function destroy(Request $request, Company $company)
     {
         try{
+            Storage::delete('images/' . $company->logo);
             $company->delete();
+            // return response()->json([
+            //     'success' => true
+            // ], 200);
         }catch(\Exception $e){
             return response()->json($e->getMessage());
         }
-
-        return response()->json([
-            'success' => true
-        ]);
     }
 }

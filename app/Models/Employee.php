@@ -11,8 +11,8 @@ class Employee extends Model
 
     protected $guarded = ['id'];
 
-    public function company()
+    public function hasCompany()
     {
-        return $this->hasOne(Company::class, 'id', 'company');
+        return $this->hasOne(Company::class, 'id', 'company_id');
     }
 }

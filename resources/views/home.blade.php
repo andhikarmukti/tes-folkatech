@@ -22,7 +22,7 @@
                         </div>
                         <div class="col">
                             <div class="card">
-                                <a class="text-center btn btn-primary">Employee</a>
+                                <a class="text-center btn btn-primary" href="/employee">Employee</a>
                             </div>
                         </div>
                     </div>

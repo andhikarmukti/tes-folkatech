@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container">
-        <h1 class="text-center mb-3">Company Page</h1>
+        <h1 class="text-center mb-3">Employee Page</h1>
         <div class="row">
             <div class="col">
                 <a href="/home" class="btn btn-warning mb-5">kembali</a>
@@ -30,23 +30,31 @@
         </div>
         <div class="row">
             <div class="col-6 mb-4 border p-3 rounded shadow-sm">
-                <form action="/company" method="POST" enctype="multipart/form-data">
+                <form action="/employee" method="POST">
                     @csrf
                     <div class="mb-3">
-                        <label for="name" class="form-label">Name</label>
-                        <input type="text" class="form-control" id="name" name="name">
+                        <label for="firstname" class="form-label">Firstname</label>
+                        <input type="text" class="form-control" id="firstname" name="firstname">
+                    </div>
+                    <div class="mb-3">
+                        <label for="lastname" class="form-label">Lastname</label>
+                        <input type="text" class="form-control" id="lastname" name="lastname">
+                    </div>
+                    <div class="mb-3">
+                        <label for="company_id" class="form-label">Company</label>
+                        <select class="form-select" name="company_id" id="company_id">
+                            @foreach ($companies as $company)
+                            <option value="{{ $company->id }}">{{ $company->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
                         <input type="email" class="form-control" id="email" name="email">
                     </div>
                     <div class="mb-3">
-                        <label for="logo" class="form-label">Logo</label>
-                        <input type="file" class="form-control" id="logo" name="logo">
-                    </div>
-                    <div class="mb-3">
-                        <label for="website" class="form-label">Website</label>
-                        <input type="text" class="form-control" id="website" name="website">
+                        <label for="phone" class="form-label">phone</label>
+                        <input type="number" class="form-control" id="phone" name="phone">
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
@@ -56,23 +64,25 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th scope="col">Name</th>
+                            <th scope="col">Firstname</th>
+                            <th scope="col">Lastname</th>
+                            <th scope="col">Company</th>
                             <th scope="col">Email</th>
-                            <th scope="col">Logo</th>
-                            <th scope="col">Website</th>
+                            <th scope="col">Phone</th>
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($companies as $company)
+                        @foreach ($employees as $employee)
                             <tr>
-                                <th scope="row">{{ $company->name }}</th>
-                                <td>{{ $company->email }}</td>
-                                <td><a class="text-decoration-none badge bg-primary" href="/storage/images/{{ $company->logo }}" target="_blank">open image</a></td>
-                                <td>{{ $company->website }}</td>
+                                <th scope="row">{{ $employee->firstname }}</th>
+                                <td>{{ $employee->lastname }}</td>
+                                <td>{{ $employee->hasCompany->name }}</td>
+                                <td>{{ $employee->email }}</td>
+                                <td>{{ $employee->phone }}</td>
                                 <td>
-                                    <a href="/company/{{ $company->id }}/edit" class="badge bg-warning text-decoration-none text-dark">edit</a>
-                                    <button class="badge bg-danger border-0 buttonDelete" data-id={{ $company->id }} data-nama="{{ $company->name }}" type="button">delete</button>
+                                    <a href="/employee/{{ $employee->id }}/edit" class="badge bg-warning text-decoration-none text-dark">edit</a>
+                                    <button class="badge bg-danger border-0 buttonDelete" data-id={{ $employee->id }} type="button">delete</button>
                                 </td>
                             </tr>
                         @endforeach
@@ -90,7 +100,7 @@
 
             Swal.fire({
                 title: 'Yakin akan dihapus?',
-                text: `Semua data employee yang berada pada ${nama} akan hilang`,
+                text: `Semua data employee ini akan dihapus`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -99,7 +109,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url : '/company/' + id,
+                        url : '/employee/' + id,
                         method : 'DELETE',
                         data : {
                             '_token' : "{{ csrf_token() }}",

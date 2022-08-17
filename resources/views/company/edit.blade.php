@@ -21,11 +21,11 @@
                     @method('PUT')
                     <div class="mb-3">
                         <label for="name" class="form-label">Name</label>
-                        <input type="text" class="form-control" id="name" name="name" value="{{ $company->name }}">
+                        <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $company->name) }}">
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" value="{{ $company->email }}">
+                        <input type="email" class="form-control" id="email" name="email" value="{{ old('email', $company->email) }}">
                     </div>
                     <div class="mb-3">
                         <label for="logo" class="form-label">Logo</label>
@@ -36,9 +36,9 @@
                     </div>
                     <div class="mb-3">
                         <label for="website" class="form-label">Website</label>
-                        <input type="text" class="form-control" id="website" name="website" value="{{ $company->website }}">
+                        <input type="text" class="form-control" id="website" name="website" value="{{ old('website', $company->website) }}">
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary">Edit</button>
                 </form>
             </div>
         </div>
