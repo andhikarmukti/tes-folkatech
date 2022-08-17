@@ -34,27 +34,43 @@
                     @csrf
                     <div class="mb-3">
                         <label for="firstname" class="form-label">Firstname</label>
-                        <input type="text" class="form-control" id="firstname" name="firstname">
+                        <input type="text" class="form-control @error('firstname') is-invalid @enderror" id="firstname" name="firstname">
+                        @error('firstname')
+                        <div class="invalid-feedback"> {{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3">
                         <label for="lastname" class="form-label">Lastname</label>
-                        <input type="text" class="form-control" id="lastname" name="lastname">
+                        <input type="text" class="form-control @error('lastname') is-invalid @enderror" id="lastname" name="lastname">
+                        @error('lastname')
+                        <div class="invalid-feedback"> {{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3">
                         <label for="company_id" class="form-label">Company</label>
-                        <select class="form-select" name="company_id" id="company_id">
+                        <select class="form-select @error('company_id') is-invalid @enderror" name="company_id" id="company_id">
+                            <option value="" disabled selected>select company</option>
                             @foreach ($companies as $company)
                             <option value="{{ $company->id }}">{{ $company->name }}</option>
                             @endforeach
                         </select>
+                        @error('company_id')
+                        <div class="invalid-feedback"> {{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email">
+                        <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email">
+                        @error('email')
+                        <div class="invalid-feedback"> {{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3">
                         <label for="phone" class="form-label">phone</label>
-                        <input type="number" class="form-control" id="phone" name="phone">
+                        <input type="number" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone">
+                        @error('phone')
+                        <div class="invalid-feedback"> {{ $message }}</div>
+                        @enderror
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
