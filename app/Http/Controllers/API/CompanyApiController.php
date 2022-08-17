@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\Models\Company;
-use App\Http\Requests\StoreCompanyRequest;
-use App\Http\Requests\UpdateCompanyRequest;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
-class CompanyController extends Controller
+class CompanyApiController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,13 +17,11 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        $title = 'Company Page';
-        $companies = Company::paginate(10)->withQueryString();
+        $companies = Company::paginate(10);
 
-        return view('company.index', compact(
-            'title',
-            'companies'
-        ));
+        return response()->json([
+            'companies' => $companies
+        ], 200);
     }
 
     /**
@@ -39,19 +37,24 @@ class CompanyController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreCompanyRequest  $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $rules = [
             'name' => 'required',
             'email' => 'required|email',
             'logo' => 'required|dimensions:min_width=100,min_height=100',
             'website' => 'required'
         ];
-        $request->validate($rules);
+        $validator = Validator::make($request->all(), $rules);
+        if($validator->fails()){
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()
+            ], 400);
+        }
 
         $imageName = time() . '.' . $request->logo->extension();
         $request->logo->storeAs('images', $imageName);
@@ -63,16 +66,19 @@ class CompanyController extends Controller
             'website' => $request->website,
         ]);
 
-        return back()->with('success', 'Berhasil menambah data company!');
+        return response()->json([
+            'success' => true,
+            'message' => 'New company has been created!'
+        ], 200);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Company  $company
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Company $company)
+    public function show($id)
     {
         //
     }
@@ -80,36 +86,38 @@ class CompanyController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Company  $company
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Company $company)
+    public function edit($id)
     {
-        $title = 'Company Page | Edit';
-
-        return view('company.edit', compact(
-            'title',
-            'company'
-        ));
+        //
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateCompanyRequest  $request
-     * @param  \App\Models\Company  $company
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Company $company)
+    public function update(Request $request, $id)
     {
-        // dd($request->oldimage);
+        // return response()->json($request->all());
+        $company = Company::find($id);
         $rules = [
             'name' => 'required',
             'email' => 'required|email',
             'logo' => 'dimensions:min_width=100,min_height=100',
             'website' => 'required'
         ];
-        $request->validate($rules);
+        $validator = Validator::make($request->all(), $rules);
+        if($validator->fails()){
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()
+            ], 400);
+        }
 
         if(!$request->logo){
             $imageName = $company->logo;
@@ -119,34 +127,35 @@ class CompanyController extends Controller
             $request->logo->storeAs('images', $imageName);
         }
 
-        $company = $company->update([
+        Company::where('id', $id)->update([
             'name' => $request->name,
             'email' => $request->email,
             'logo' => $imageName,
             'website' => $request->website,
         ]);
 
-        return redirect('/company')->with('updated', 'Berhasil mengubah data company!');
-        // return response()->json([
-        //     'success' => true,
-        //     'company' =>$company
-        // ], 200);
+        return response()->json([
+            'success' => true,
+            'message' => 'New company has been updated!'
+        ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Company  $company
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, Company $company)
+    public function destroy($id)
     {
+        $company = Company::find($id);
         try{
             Storage::delete('images/' . $company->logo);
             $company->delete();
-            // return response()->json([
-            //     'success' => true
-            // ], 200);
+            return response()->json([
+                'success' => true,
+                'message' => 'The company has been deleted!'
+            ], 200);
         }catch(\Exception $e){
             return response()->json($e->getMessage());
         }

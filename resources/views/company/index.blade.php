@@ -90,6 +90,9 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div class="d-flex">
+                    {!! $companies->links() !!}
+                </div>
             </div>
         </div>
     </div>

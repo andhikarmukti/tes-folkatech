@@ -104,6 +104,9 @@
                         @endforeach
                     </tbody>
                 </table>
+                <div class="d-flex">
+                    {!! $employees->links() !!}
+                </div>
             </div>
         </div>
     </div>

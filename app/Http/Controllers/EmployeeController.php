@@ -18,7 +18,7 @@ class EmployeeController extends Controller
     public function index()
     {
         $title = 'Employee Page';
-        $employees = Employee::all();
+        $employees = Employee::paginate(10)->withQueryString();
         $companies = Company::all();
 
         return view('employee.index', compact(
@@ -52,7 +52,7 @@ class EmployeeController extends Controller
             'lastname' => 'required',
             'company_id' => 'required',
             'email' => 'required|email',
-            'phone' => 'required',
+            'phone' => 'required|min:6',
         ];
         $request->validate($rules);
 
