@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Jobs\SendEmailNotifyCompany;
 use Illuminate\Support\Facades\Validator;
 
 class EmployeeApiController extends Controller
@@ -57,7 +58,9 @@ class EmployeeApiController extends Controller
         }
 
         try{
-            Employee::create($request->all());
+            $employee = Employee::create($request->all());
+            $details = $employee->hasCompany->email;
+            dispatch(new SendEmailNotifyCompany($details));
             return response()->json([
                 'success' => true,
                 'message' => "New employee has been created!"

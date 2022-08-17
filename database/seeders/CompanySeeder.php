@@ -17,10 +17,10 @@ class CompanySeeder extends Seeder
     {
         $companies = [
             [
-                'name' => 'PT. A',
-                'email' => 'a@gmail.com',
+                'name' => 'PT. Andhika Raharja Mukti',
+                'email' => 'andhikarmukti@gmail.com',
                 'logo' => 'logo A',
-                'website' => 'a.com'
+                'website' => 'andhikarmukti.com'
             ],
             [
                 'name' => 'PT. B',
